@@ -15,7 +15,7 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 //printf("[SYSTEM] input_operand = \"%d\"\n", input_operand );
 
 	*operand = input_operand;
-
+	printf("operand=%d\n", *operand );
 	if( !strcmp( input_line, "start" ) ) input_instruction = START;
 	else if( !strcmp( input_line, "push" ) ) input_instruction = PUSH;
 	else if( !strcmp( input_line, "pop" ) ) input_instruction = POP;
@@ -44,6 +44,11 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 	}
 */
 	free( input_line );
+
+	if( instruction )
+	{
+		*instruction = input_instruction;
+	}
 	return input_instruction;
 }
 
@@ -72,7 +77,7 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t ope
 void start_cpu( CPU* some_cpu )
 {
 printf( "[SYSTEM] CPU started\n" );
-	StackCtor( &some_cpu->data_stack );
+	StackCtor( &some_cpu->data_stack, int_array_dump );
 }
 
 
@@ -80,6 +85,7 @@ printf( "[SYSTEM] CPU started\n" );
 void push_cpu( CPU* some_cpu, cpu_operand_t value )
 {
 printf( "[SYSTEM] CPU push\n" );
+printf("value=%d\n", value );
 	stack_push( &some_cpu->data_stack, value );
 }
 
