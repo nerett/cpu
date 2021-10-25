@@ -54,11 +54,71 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 
 
 
+int* cpucode_file_input( const char* filename )
+{
+	assert( filename );
+	FILE* cpucode_file = fopen( filename, "r" );
+
+	fseek( cpucode_file, 0L, SEEK_END ); //определение размера файла
+    size_t N_symbols = ftell( cpucode_file );
+	fseek( cpucode_file, 0L, SEEK_SET );
+
+	char* cpucode_char = ( char* )calloc( N_symbols, sizeof( char ) );
+	fread( cpucode_char, sizeof( char ), N_symbols, cpucode_file );
+
+ 	int N_values = 0;
+	for( int i = 0; i < N_symbols; i++ )
+	{
+		if( cpucode_char[i] == ' ' || cpucode_char[i] == '\n' )
+		{
+			N_values++;
+		}
+	}
+
+	int* cpucode_int = ( int* )calloc( N_values + 1, sizeof( int ) );
+	for( int i = 0; i < N_values; i++ )
+	{
+		sscanf( cpucode_char, "%d", &cpucode_int[i] );
+	}
+
+	cpucode_int[N_values+1] = -1;
+
+	fclose( cpucode_file );
+	free( cpucode_char );
+
+	return cpucode_int;
+}
+
+
+
+void execute_cpucode( CPU* some_cpu, const int* some_cpucode )
+{
+	assert( some_cpu );
+	assert( some_cpucode );
+
+	int i = 0;
+	instruction_type current_instruction = NONE;
+	cpu_operand_t param = 0;
+	while( some_cpucode[i] >= 0 )
+	{
+		current_instruction = ( instruction_type )some_cpucode[i];
+		if( instruction_lenght[current_instruction] == 2 )
+		{
+			i++;
+			param = some_cpucode[i];
+		}
+		execute_cpu( some_cpu, current_instruction, param );
+		i++;
+	}
+}
+
+
+
 void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t operand )
 {
 	switch( instruction )
 	{
-		case NONE: break;
+		case HLT: hlt_cpu( some_cpu ); break;
 		case START: start_cpu( some_cpu ); break;
 		case PUSH: push_cpu( some_cpu, operand ); break;
 		case POP: pop_cpu( some_cpu ); break;
@@ -67,7 +127,7 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t ope
 		case MUL: mul_cpu( some_cpu ); break;
 		case DIV: div_cpu( some_cpu ); break;
 		case OUT: out_cpu( some_cpu ); break;
-		case HLT: hlt_cpu( some_cpu ); break;
+		case NONE: break; //в принципе, лишнее
 		default: break;
 	}
 }

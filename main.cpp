@@ -8,12 +8,17 @@ int main()
 
 	return 0;
 	*/
+	remake_log();
+
 	CPU Pentium_D = {};
 	cpu_operand_t param = {};
 	instruction_type the_instruction = {};
-	printf("%d\n", param);
-	remake_log();
 
+	int* cpucode = cpucode_file_input( "cpucode_input.txt" );
+	execute_cpucode( &Pentium_D, cpucode );
+
+	free( cpucode );
+	return 0;
 	while( true )
 	{
 		listen_input_cpu( &param, &the_instruction );

@@ -8,6 +8,20 @@
 
 typedef int cpu_operand_t;
 
+const char instruction_lenght[] =
+{
+	1, //HLT
+	1, //START
+	2, //PUSH
+	1, //POP
+	1, //ADD
+	1, //SUB
+	1, //MUL
+	1, //DIV
+	1, //OUT
+	1 //NONE
+};
+
 enum instruction_type
 {
 	HLT = 0,
@@ -22,11 +36,13 @@ enum instruction_type
 	NONE = 9
 };
 
+/*
 struct CPUInstruction
 {
 	instruction_type type = NONE;
 	cpu_operand_t param;
 };
+*/
 
 struct CPU
 {
@@ -36,6 +52,8 @@ struct CPU
 
 instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* instruction = NULL );
 void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t operand = {} );
+void execute_cpucode( CPU* some_cpu, const int* some_cpucode );
+int* cpucode_file_input( const char* filename );
 
 void start_cpu( CPU* some_cpu );
 void push_cpu( CPU* some_cpu, cpu_operand_t value );
