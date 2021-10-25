@@ -8,7 +8,19 @@
 
 typedef int cpu_operand_t;
 
-enum instruction_type { NONE, START, PUSH, POP, ADD, SUB, MUL, DIV, OUT, HLT };
+enum instruction_type
+{
+	HLT = 0,
+	START = 1,
+	PUSH = 2,
+	POP = 3,
+	ADD = 4,
+	SUB = 5,
+	MUL = 6,
+	DIV = 7,
+	OUT = 8,
+	NONE = 9
+};
 
 struct CPUInstruction
 {
