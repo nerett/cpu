@@ -57,53 +57,20 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 {
 	assert( filename );
-	FILE* cpucode_file = fopen( filename, "r" );
+	FILE* cpucode_file = fopen( filename, "rb" );
+
+	//some_cpucode->N_entities = 11;
 
 	fseek( cpucode_file, 0L, SEEK_END ); //определение размера файла
-    size_t N_symbols = ftell( cpucode_file );
+    some_cpucode->N_entities = ( ftell( cpucode_file ) / sizeof( int ) );
 	fseek( cpucode_file, 0L, SEEK_SET );
 
-	char* cpucode_char = ( char* )calloc( N_symbols, sizeof( char ) );
-	fread( cpucode_char, sizeof( char ), N_symbols, cpucode_file );
-//printf("RED SEQUENCE = %s\n", cpucode_char );
-/*
-printf("char_cpucode = %s\n", cpucode_char );
-int test1, test2, test3, test4;
-sscanf( cpucode_char, "%d", &test1 );
-sscanf( cpucode_char, "%d", &test2 );
-sscanf( cpucode_char, "%d", &test3 );
-sscanf( cpucode_char, "%d", &test4 );
-printf("sscanf_test: %d %d %d %d\n", test1, test2, test3, test4 );
-*/
-
-	for( int i = 0; i < N_symbols; i++ )
-	{
-		if( cpucode_char[i] == ' ' || cpucode_char[i] == '\n' )
-		{
-			some_cpucode->N_entities++;
-		}
-	}
-printf("N_values = %d\n", some_cpucode->N_entities );
-char* ptr = cpucode_char;
 	some_cpucode->machine_code = ( cpu_operand_t* )calloc( some_cpucode->N_entities + 1, sizeof( cpu_operand_t ) ); //смена типа пока не работает в силу неравномерности
-
-
-	for( int i = 0; i < some_cpucode->N_entities; i++ ) // -1 или нет
-	{
-		//int ret =
-		//sscanf( cpucode_char, "%d", &some_cpucode->machine_code[i] );
-		//printf("Sscanf ret value: %d\n", ret);
-		some_cpucode->machine_code[i] = ( int )strtod( cpucode_char, &ptr );
-		printf("ptr = %d\n", ptr );
-		//printf("written %f\n", strtod( cpucode_char, &ptr ) );
-		//printf("i = %d\n", i );
-	}
-
+	fread( some_cpucode->machine_code, sizeof( int ), some_cpucode->N_entities, cpucode_file );
 
 	some_cpucode->machine_code[some_cpucode->N_entities+1] = -1;
 
 	fclose( cpucode_file );
-	free( cpucode_char );
 }
 
 
@@ -112,22 +79,21 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
 {
 	assert( some_cpu );
 	assert( some_cpucode );
-/*
-	int i = 0;
+
+	//int i = 0;
 	instruction_type current_instruction = NONE;
 	cpu_operand_t param = 0;
-	while( some_cpucode[i] >= 0 )
+	for( int i = 0; i < some_cpucode->N_entities; i++ )
 	{
-		current_instruction = ( instruction_type )some_cpucode[i];
+		current_instruction = ( instruction_type )some_cpucode->machine_code[i];
 		if( instruction_lenght[current_instruction] == 2 )
 		{
 			i++;
-			param = some_cpucode[i];
+			param = some_cpucode->machine_code[i];
 		}
 		execute_cpu( some_cpu, current_instruction, param );
 		i++;
 	}
-*/
 }
 
 
