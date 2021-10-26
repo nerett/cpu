@@ -54,7 +54,7 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 
 
 
-int* cpucode_file_input( const char* filename )
+void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 {
 	assert( filename );
 	FILE* cpucode_file = fopen( filename, "r" );
@@ -65,37 +65,46 @@ int* cpucode_file_input( const char* filename )
 
 	char* cpucode_char = ( char* )calloc( N_symbols, sizeof( char ) );
 	fread( cpucode_char, sizeof( char ), N_symbols, cpucode_file );
+printf("RED SEQUENCE = %s\n", cpucode_char );
+/*
+printf("char_cpucode = %s\n", cpucode_char );
+int test1, test2, test3, test4;
+sscanf( cpucode_char, "%d", &test1 );
+sscanf( cpucode_char, "%d", &test2 );
+sscanf( cpucode_char, "%d", &test3 );
+sscanf( cpucode_char, "%d", &test4 );
+printf("sscanf_test: %d %d %d %d\n", test1, test2, test3, test4 );
+*/
 
- 	int N_values = 0;
 	for( int i = 0; i < N_symbols; i++ )
 	{
 		if( cpucode_char[i] == ' ' || cpucode_char[i] == '\n' )
 		{
-			N_values++;
+			some_cpucode->N_entities++;
 		}
 	}
+printf("N_values = %d\n", some_cpucode->N_entities );
 
-	int* cpucode_int = ( int* )calloc( N_values + 1, sizeof( int ) );
-	for( int i = 0; i < N_values; i++ )
+	some_cpucode->machine_code = ( cpu_operand_t* )calloc( some_cpucode->N_entities + 1, sizeof( cpu_operand_t ) ); //смена типа пока не работает в силу неравномерности
+	for( int i = 0; i < some_cpucode->N_entities - 1; i++ ) // -1 или нет
 	{
-		sscanf( cpucode_char, "%d", &cpucode_int[i] );
+		int ret = sscanf( cpucode_char, "%d", &some_cpucode->machine_code[i] );
+		//printf("Sscanf ret value: %d\n", ret);
 	}
 
-	cpucode_int[N_values+1] = -1;
+	some_cpucode->machine_code[some_cpucode->N_entities+1] = -1;
 
 	fclose( cpucode_file );
 	free( cpucode_char );
-
-	return cpucode_int;
 }
 
 
 
-void execute_cpucode( CPU* some_cpu, const int* some_cpucode )
+void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
 {
 	assert( some_cpu );
 	assert( some_cpucode );
-
+/*
 	int i = 0;
 	instruction_type current_instruction = NONE;
 	cpu_operand_t param = 0;
@@ -110,6 +119,14 @@ void execute_cpucode( CPU* some_cpu, const int* some_cpucode )
 		execute_cpu( some_cpu, current_instruction, param );
 		i++;
 	}
+*/
+}
+
+
+
+void free_cpucode( CpuCode* some_cpucode )
+{
+	free( some_cpucode->machine_code);
 }
 
 

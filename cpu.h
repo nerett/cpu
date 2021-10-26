@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "stack_stable/stack.h"
+#include "../stack/stack.h"
 
 typedef int cpu_operand_t;
 
@@ -36,6 +36,16 @@ enum instruction_type
 	NONE = 9
 };
 
+
+
+struct CpuCode
+{
+		cpu_operand_t* machine_code = NULL;
+		int N_entities = 0;
+		int N_instructions = 0;
+};
+
+
 /*
 struct CPUInstruction
 {
@@ -52,8 +62,9 @@ struct CPU
 
 instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* instruction = NULL );
 void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t operand = {} );
-void execute_cpucode( CPU* some_cpu, const int* some_cpucode );
-int* cpucode_file_input( const char* filename );
+void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode );
+void cpucode_file_input( CpuCode* some_cpucode, const char* filename );
+void free_cpucode( CpuCode* some_cpucode );
 
 void start_cpu( CPU* some_cpu );
 void push_cpu( CPU* some_cpu, cpu_operand_t value );
