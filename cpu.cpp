@@ -11,8 +11,6 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 	{
 		scanf( "%d", &input_operand );
 	}
-//printf("[SYSTEM] red value = \"%s\"\n", input_line );
-//printf("[SYSTEM] input_operand = \"%d\"\n", input_operand );
 
 	*operand = input_operand;
 	printf("operand=%d\n", *operand );
@@ -27,22 +25,6 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 	else if( !strcmp( input_line, "hlt" ) ) input_instruction = HLT;
 	//else input_instruction = NONE;
 
-
-/*
-	switch( input_line )
-	{
-		case "start": input_instruction = START; break;
-		case "push": input_instruction = PUSH; break;
-		case "pop": input_instruction = POP; break;
-		case "add": input_instruction = ADD; break;
-		case "sub": input_instruction = SUB; break;
-		case "mul": input_instruction = MUL; break;
-		case "div": input_instruction = DIV; break;
-		case "out": input_instruction = OUT; break;
-		case "hlt": input_instruction = HLT; break;
-		default: input_instruction = NONE;
-	}
-*/
 	free( input_line );
 
 	if( instruction )
@@ -57,9 +39,9 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 {
 	assert( filename );
-	FILE* cpucode_file = fopen( filename, "rb" );
 
-	//some_cpucode->N_entities = 11;
+
+	FILE* cpucode_file = fopen( filename, "rb" );
 
 	fseek( cpucode_file, 0L, SEEK_END ); //определение размера файла
     some_cpucode->N_entities = ( ftell( cpucode_file ) / sizeof( int ) );
@@ -79,15 +61,12 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
 {
 	assert( some_cpu );
 	assert( some_cpucode );
-//printf("1st elt = %d\n", some_cpucode->machine_code[1] );
-	//int i = 0;
+
 	instruction_type current_instruction = NONE;
 	cpu_operand_t param = 0;
 	for( int i = 0; i < some_cpucode->N_entities; i++ )
 	{
 		current_instruction = ( instruction_type )some_cpucode->machine_code[i];
-		//printf("got instruction %d\n", current_instruction );
-		//printf( "instruction length = %d\n", instruction_length[current_instruction] );
 		if( instruction_length[current_instruction] == 2 )
 		{
 			i++;
