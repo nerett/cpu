@@ -45,6 +45,11 @@ void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 
 	BinaryHeader bin_header;
 	fread( &bin_header, sizeof( BinaryHeader ), 1, cpucode_file );
+	if( strcmp( bin_header.name, "SoftwareProcessor" ) != 0 )
+	{
+		printf( "Invalid executable file!\n" );
+		return;
+	}
 	if( bin_header.version > CPU_VERSION )
 	{
 		printf( "The version of the cpucode commands is too new for this CPU!\n" );
