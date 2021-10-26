@@ -43,9 +43,17 @@ void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 
 	FILE* cpucode_file = fopen( filename, "rb" );
 
+	BinaryHeader bin_header;
+	fread( &bin_header, sizeof( BinaryHeader ), 1, cpucode_file );
+	if( bin_header.version > CPU_VERSION )
+	{
+		printf( "The version of the cpucode commands is too new for this CPU!\n" );
+		return;
+	}
+
 	fseek( cpucode_file, 0L, SEEK_END ); //определение размера файла
-    some_cpucode->N_entities = ( ftell( cpucode_file ) / sizeof( int ) );
-	fseek( cpucode_file, 0L, SEEK_SET );
+    some_cpucode->N_entities = ( ( ftell( cpucode_file ) - sizeof( BinaryHeader ) )/ sizeof( int ) ); //новая функция
+	fseek( cpucode_file, sizeof( BinaryHeader ), SEEK_SET );
 
 	some_cpucode->machine_code = ( cpu_operand_t* )calloc( some_cpucode->N_entities + 1, sizeof( cpu_operand_t ) ); //смена типа пока не работает в силу неравномерности
 	fread( some_cpucode->machine_code, sizeof( int ), some_cpucode->N_entities, cpucode_file );

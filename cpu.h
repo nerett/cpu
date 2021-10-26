@@ -8,6 +8,8 @@
 
 typedef int cpu_operand_t;
 
+const int CPU_VERSION = 0;
+
 const int instruction_length[] =
 {
 	1, //HLT
@@ -58,6 +60,14 @@ struct CPU
 {
 	Stack data_stack;
 	//cpu_operand_t
+};
+
+struct BinaryHeader
+{
+	char header = 0x7f;
+	char type[4] = "ELF";
+	char name[18] = "SoftwareProcessor";
+	int version = 0;
 };
 
 instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* instruction = NULL );
