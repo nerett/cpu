@@ -65,7 +65,7 @@ void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 
 	char* cpucode_char = ( char* )calloc( N_symbols, sizeof( char ) );
 	fread( cpucode_char, sizeof( char ), N_symbols, cpucode_file );
-printf("RED SEQUENCE = %s\n", cpucode_char );
+//printf("RED SEQUENCE = %s\n", cpucode_char );
 /*
 printf("char_cpucode = %s\n", cpucode_char );
 int test1, test2, test3, test4;
@@ -84,13 +84,21 @@ printf("sscanf_test: %d %d %d %d\n", test1, test2, test3, test4 );
 		}
 	}
 printf("N_values = %d\n", some_cpucode->N_entities );
-
+char* ptr = cpucode_char;
 	some_cpucode->machine_code = ( cpu_operand_t* )calloc( some_cpucode->N_entities + 1, sizeof( cpu_operand_t ) ); //смена типа пока не работает в силу неравномерности
-	for( int i = 0; i < some_cpucode->N_entities - 1; i++ ) // -1 или нет
+
+
+	for( int i = 0; i < some_cpucode->N_entities; i++ ) // -1 или нет
 	{
-		int ret = sscanf( cpucode_char, "%d", &some_cpucode->machine_code[i] );
+		//int ret =
+		//sscanf( cpucode_char, "%d", &some_cpucode->machine_code[i] );
 		//printf("Sscanf ret value: %d\n", ret);
+		some_cpucode->machine_code[i] = ( int )strtod( cpucode_char, &ptr );
+		printf("ptr = %d\n", ptr );
+		//printf("written %f\n", strtod( cpucode_char, &ptr ) );
+		//printf("i = %d\n", i );
 	}
+
 
 	some_cpucode->machine_code[some_cpucode->N_entities+1] = -1;
 

@@ -15,13 +15,15 @@ int main()
 	cpu_operand_t param = {};
 	instruction_type the_instruction = {};
 
-	cpucode_file_input( &some_cpucode, "../cpucode_builder/code.txt" );
+	cpucode_file_input( &some_cpucode, "../cpucode_builder/cpucode" );
 
 	printf("RED CPUCODE: \n" );
 	for( int i = 0; i < some_cpucode.N_entities; i ++ )
 	{
 		printf("%d\n", some_cpucode.machine_code[i] );
 	}
+
+
 
 	execute_cpucode( &Pentium_D, &some_cpucode );
 
