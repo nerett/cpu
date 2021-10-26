@@ -8,7 +8,7 @@
 
 typedef int cpu_operand_t;
 
-const char instruction_lenght[] =
+const int instruction_length[] =
 {
 	1, //HLT
 	1, //START

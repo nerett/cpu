@@ -79,20 +79,21 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
 {
 	assert( some_cpu );
 	assert( some_cpucode );
-
+//printf("1st elt = %d\n", some_cpucode->machine_code[1] );
 	//int i = 0;
 	instruction_type current_instruction = NONE;
 	cpu_operand_t param = 0;
 	for( int i = 0; i < some_cpucode->N_entities; i++ )
 	{
 		current_instruction = ( instruction_type )some_cpucode->machine_code[i];
-		if( instruction_lenght[current_instruction] == 2 )
+		//printf("got instruction %d\n", current_instruction );
+		//printf( "instruction length = %d\n", instruction_length[current_instruction] );
+		if( instruction_length[current_instruction] == 2 )
 		{
 			i++;
 			param = some_cpucode->machine_code[i];
 		}
 		execute_cpu( some_cpu, current_instruction, param );
-		i++;
 	}
 }
 
