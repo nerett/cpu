@@ -122,6 +122,7 @@ void start_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU started\n" );
 	StackCtor( &some_cpu->data_stack, int_array_dump );
+	some_cpu->ram_ptr = ( cpu_operand_t* )calloc( RAM_SIZE, sizeof( cpu_operand_t ) );
 }
 
 
@@ -197,4 +198,5 @@ void hlt_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU hlt\n" );
 	StackDtor( &some_cpu->data_stack );
+	free( some_cpu->ram_ptr );
 }

@@ -10,6 +10,9 @@ typedef int cpu_operand_t;
 
 const int CPU_VERSION = 0;
 
+const int RAM_SIZE = 100;
+const int RAM_ACCESS_TIME = 20;
+
 const int instruction_length[] =
 {
 	1, //HLT
@@ -59,6 +62,8 @@ struct CPUInstruction
 struct CPU
 {
 	Stack data_stack;
+	cpu_operand_t reg[4] = {};
+	cpu_operand_t* ram_ptr = NULL;
 	//cpu_operand_t
 };
 
