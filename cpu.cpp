@@ -13,8 +13,8 @@ instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* ins
 	}
 
 	*operand = input_operand;
-	printf("operand=%d\n", *operand );
-	if( !strcmp( input_line, "start" ) ) input_instruction = START;
+	//printf("operand=%d\n", *operand );
+	if( !strcmp( input_line, "start" ) ) input_instruction = STRT;
 	else if( !strcmp( input_line, "push" ) ) input_instruction = PUSH;
 	else if( !strcmp( input_line, "pop" ) ) input_instruction = POP;
 	else if( !strcmp( input_line, "add" ) ) input_instruction = ADD;
@@ -103,7 +103,7 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t ope
 	switch( instruction )
 	{
 		case HLT: hlt_cpu( some_cpu ); break;
-		case START: start_cpu( some_cpu ); break;
+		case STRT: start_cpu( some_cpu ); break;
 		case PUSH: push_cpu( some_cpu, operand ); break;
 		case POP: pop_cpu( some_cpu ); break;
 		case ADD: add_cpu( some_cpu ); break;
@@ -120,7 +120,7 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t ope
 
 void start_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU started\n" );
+	printf( "[SYSTEM] CPU started\n" );
 	StackCtor( &some_cpu->data_stack, int_array_dump );
 }
 
@@ -128,16 +128,17 @@ printf( "[SYSTEM] CPU started\n" );
 
 void push_cpu( CPU* some_cpu, cpu_operand_t value )
 {
-printf( "[SYSTEM] CPU push\n" );
-printf("value=%d\n", value );
+	printf( "[SYSTEM] CPU push\n" );
+	//printf("value=%d\n", value );
 	stack_push( &some_cpu->data_stack, value );
+stack_dump( &some_cpu->data_stack, CALLOC_ERROR, __FILE__, __PRETTY_FUNCTION__, __LINE__  );
 }
 
 
 
 void pop_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU pop\n" );
+	printf( "[SYSTEM] CPU pop\n" );
 	stack_pop( &some_cpu->data_stack );
 }
 
@@ -145,7 +146,7 @@ printf( "[SYSTEM] CPU pop\n" );
 
 void add_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU add\n" );
+	printf( "[SYSTEM] CPU add\n" );
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 + value_2 );
@@ -155,7 +156,7 @@ printf( "[SYSTEM] CPU add\n" );
 
 void sub_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU sub\n" );
+	printf( "[SYSTEM] CPU sub\n" );
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 - value_2 );
@@ -165,7 +166,7 @@ printf( "[SYSTEM] CPU sub\n" );
 
 void mul_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU mul\n" );
+	printf( "[SYSTEM] CPU mul\n" );
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 * value_2 );
@@ -175,7 +176,7 @@ printf( "[SYSTEM] CPU mul\n" );
 
 void div_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU div\n" );
+	printf( "[SYSTEM] CPU div\n" );
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 / value_2 );
@@ -185,7 +186,7 @@ printf( "[SYSTEM] CPU div\n" );
 
 void out_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU out\n" );
+	printf( "[SYSTEM] CPU out\n" );
 	cpu_operand_t value = stack_pop( &some_cpu->data_stack );
 	printf("%d\n", value );
 }
@@ -194,6 +195,6 @@ printf( "[SYSTEM] CPU out\n" );
 
 void hlt_cpu( CPU* some_cpu )
 {
-printf( "[SYSTEM] CPU hlt\n" );
+	printf( "[SYSTEM] CPU hlt\n" );
 	StackDtor( &some_cpu->data_stack );
 }

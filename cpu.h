@@ -27,7 +27,7 @@ const int instruction_length[] =
 enum instruction_type
 {
 	HLT = 0,
-	START = 1,
+	STRT = 1,
 	PUSH = 2,
 	POP = 3,
 	ADD = 4,
