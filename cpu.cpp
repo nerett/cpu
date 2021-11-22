@@ -1,41 +1,7 @@
 #include "cpu.h"
 
-instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* instruction )
-{
-	char* input_line = NULL;
-	int input_operand = 0;
-	instruction_type input_instruction = NONE;
 
-	scanf("%ms[a-z]", &input_line );
-	if( !strcmp( input_line, "push" ) )
-	{
-		scanf( "%d", &input_operand );
-	}
-
-	*operand = input_operand;
-	//printf("operand=%d\n", *operand );
-	if( !strcmp( input_line, "start" ) ) input_instruction = STRT;
-	else if( !strcmp( input_line, "push" ) ) input_instruction = PUSH;
-	else if( !strcmp( input_line, "pop" ) ) input_instruction = POP;
-	else if( !strcmp( input_line, "add" ) ) input_instruction = ADD;
-	else if( !strcmp( input_line, "sub" ) ) input_instruction = SUB;
-	else if( !strcmp( input_line, "mul" ) ) input_instruction = MUL;
-	else if( !strcmp( input_line, "div" ) ) input_instruction = DIV;
-	else if( !strcmp( input_line, "out" ) ) input_instruction = OUT;
-	else if( !strcmp( input_line, "hlt" ) ) input_instruction = HLT;
-	//else input_instruction = NONE;
-
-	free( input_line );
-
-	if( instruction )
-	{
-		*instruction = input_instruction;
-	}
-	return input_instruction;
-}
-
-
-
+/*--------------------------FUNCTION----------------------------------------- */
 void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 {
 	assert( filename );
@@ -69,7 +35,7 @@ void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
 {
 	assert( some_cpu );
@@ -90,14 +56,14 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void free_cpucode( CpuCode* some_cpucode )
 {
 	free( some_cpucode->machine_code);
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t operand )
 {
 	switch( instruction )
@@ -117,7 +83,7 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t ope
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void start_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU started\n" );
@@ -126,7 +92,7 @@ void start_cpu( CPU* some_cpu )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void push_cpu( CPU* some_cpu, cpu_operand_t value )
 {
 	printf( "[SYSTEM] CPU push\n" );
@@ -136,7 +102,7 @@ stack_dump( &some_cpu->data_stack, CALLOC_ERROR, __FILE__, __PRETTY_FUNCTION__, 
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void pop_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU pop\n" );
@@ -144,7 +110,7 @@ void pop_cpu( CPU* some_cpu )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void add_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU add\n" );
@@ -154,7 +120,7 @@ void add_cpu( CPU* some_cpu )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void sub_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU sub\n" );
@@ -164,7 +130,7 @@ void sub_cpu( CPU* some_cpu )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void mul_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU mul\n" );
@@ -174,7 +140,7 @@ void mul_cpu( CPU* some_cpu )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void div_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU div\n" );
@@ -184,7 +150,7 @@ void div_cpu( CPU* some_cpu )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void out_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU out\n" );
@@ -193,7 +159,7 @@ void out_cpu( CPU* some_cpu )
 }
 
 
-
+/*--------------------------FUNCTION----------------------------------------- */
 void hlt_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU hlt\n" );

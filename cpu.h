@@ -8,6 +8,8 @@
 
 typedef int cpu_operand_t;
 
+
+/*--------------------------CONST---------------------------------------------*/
 const int CPU_VERSION = 0;
 
 const int RAM_SIZE = 100;
@@ -27,6 +29,8 @@ const int instruction_length[] =
 	1 //NONE
 };
 
+
+/*--------------------------ENUM----------------------------------------------*/
 enum instruction_type
 {
 	HLT = 0,
@@ -42,22 +46,13 @@ enum instruction_type
 };
 
 
-
+/*--------------------------STRUCT--------------------------------------------*/
 struct CpuCode
 {
 		cpu_operand_t* machine_code = NULL;
 		int N_entities = 0;
 		int N_instructions = 0;
 };
-
-
-/*
-struct CPUInstruction
-{
-	instruction_type type = NONE;
-	cpu_operand_t param;
-};
-*/
 
 struct CPU
 {
@@ -75,7 +70,8 @@ struct BinaryHeader
 	int version = 0;
 };
 
-instruction_type listen_input_cpu( cpu_operand_t* operand, instruction_type* instruction = NULL );
+
+/*--------------------------PROTOTYPE-----------------------------------------*/
 void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t operand = {} );
 void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode );
 void cpucode_file_input( CpuCode* some_cpucode, const char* filename );
