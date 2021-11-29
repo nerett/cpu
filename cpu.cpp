@@ -84,17 +84,17 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_arg
 {
 	switch( instruction )
 	{
-		case HLT: hlt_cpu( some_cpu ); break;
-		case STRT: start_cpu( some_cpu ); break;
+		case HLT:  hlt_cpu( some_cpu );                      break;
+		case STRT: start_cpu( some_cpu );                    break;
 		case PUSH: push_cpu( some_cpu, descr_arg, operand ); break;
-		case POP: pop_cpu( some_cpu, descr_arg ); break;
-		case ADD: add_cpu( some_cpu ); break;
-		case SUB: sub_cpu( some_cpu ); break;
-		case MUL: mul_cpu( some_cpu ); break;
-		case DIV: div_cpu( some_cpu ); break;
-		case OUT: out_cpu( some_cpu ); break;
-		case NONE: break; //в принципе, лишнее, но можно сделать проверку
-		default: break;
+		case POP:  pop_cpu( some_cpu, descr_arg );           break;
+		case ADD:  add_cpu( some_cpu );                      break;
+		case SUB:  sub_cpu( some_cpu );                      break;
+		case MUL:  mul_cpu( some_cpu );                      break;
+		case DIV:  div_cpu( some_cpu );                      break;
+		case OUT:  out_cpu( some_cpu );                      break;
+		case NONE:                                           break; //в принципе, лишнее, но можно сделать проверку
+		default:                                             break;
 	}
 }
 
@@ -113,7 +113,24 @@ void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t va
 {
 	printf( "[SYSTEM] CPU push\n" );
 	//printf("value=%d\n", value );
-	stack_push( &some_cpu->data_stack, value );
+
+	switch( descr_arg )
+	{
+		case INT:  stack_push( &some_cpu->data_stack, value );                               break;
+		case REAL: printf( "REAL DOESN'T WORK\n" );                                          break; //!TODO добавить полноценную поддержку
+		case RGAX: stack_push( &some_cpu->data_stack, some_cpu->reg[0] );                    break;
+		case RGBX: stack_push( &some_cpu->data_stack, some_cpu->reg[1] );                    break;
+		case RGCX: stack_push( &some_cpu->data_stack, some_cpu->reg[2] );                    break;
+		case RGDX: stack_push( &some_cpu->data_stack, some_cpu->reg[3] );                    break;
+		case RAM:  stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[value] );            break;
+		case RAMA: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[0]] ); break; //DSL'а нет, но вы держитесь
+		case RAMB: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[1]] ); break;
+		case RAMC: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[2]] ); break;
+		case RAMD: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[3]] ); break;
+		case NARG: printf( "NARG!!!" );                                                      break;
+	}
+
+
 stack_dump( &some_cpu->data_stack, CALLOC_ERROR, __FILE__, __PRETTY_FUNCTION__, __LINE__  );
 }
 
