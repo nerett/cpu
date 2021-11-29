@@ -43,15 +43,31 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
 
 	instruction_type current_instruction = NONE;
 	cpu_operand_t param = 0;
-	for( int i = 0; i < some_cpucode->N_entities; i++ )
+	descriptional_argument descr_arg = NARG;
+
+	int i = 0;
+	while( i < some_cpucode->N_entities )
 	{
+		current_instruction = NONE;
+		param = 0;
+		descr_arg = NARG;
+
+
 		current_instruction = ( instruction_type )some_cpucode->machine_code[i];
-		if( instruction_length[current_instruction] == 2 )
+		i++;
+
+		if( instruction_length[current_instruction] > 1 )
 		{
+			descr_arg = ( descriptional_argument )some_cpucode->machine_code[i];
 			i++;
-			param = some_cpucode->machine_code[i];
+
+			if( instruction_length[current_instruction] > 2 )
+			{
+				param = some_cpucode->machine_code[i];
+				i++;
+			}
 		}
-		execute_cpu( some_cpu, current_instruction, param );
+		execute_cpu( some_cpu, current_instruction, descr_arg, param );
 	}
 }
 
@@ -64,20 +80,20 @@ void free_cpucode( CpuCode* some_cpucode )
 
 
 /*--------------------------FUNCTION----------------------------------------- */
-void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t operand )
+void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_argument descr_arg, cpu_operand_t operand )
 {
 	switch( instruction )
 	{
 		case HLT: hlt_cpu( some_cpu ); break;
 		case STRT: start_cpu( some_cpu ); break;
-		case PUSH: push_cpu( some_cpu, operand ); break;
-		case POP: pop_cpu( some_cpu ); break;
+		case PUSH: push_cpu( some_cpu, descr_arg, operand ); break;
+		case POP: pop_cpu( some_cpu, descr_arg ); break;
 		case ADD: add_cpu( some_cpu ); break;
 		case SUB: sub_cpu( some_cpu ); break;
 		case MUL: mul_cpu( some_cpu ); break;
 		case DIV: div_cpu( some_cpu ); break;
 		case OUT: out_cpu( some_cpu ); break;
-		case NONE: break; //в принципе, лишнее
+		case NONE: break; //в принципе, лишнее, но можно сделать проверку
 		default: break;
 	}
 }
@@ -93,7 +109,7 @@ void start_cpu( CPU* some_cpu )
 
 
 /*--------------------------FUNCTION----------------------------------------- */
-void push_cpu( CPU* some_cpu, cpu_operand_t value )
+void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t value )
 {
 	printf( "[SYSTEM] CPU push\n" );
 	//printf("value=%d\n", value );
@@ -103,7 +119,7 @@ stack_dump( &some_cpu->data_stack, CALLOC_ERROR, __FILE__, __PRETTY_FUNCTION__, 
 
 
 /*--------------------------FUNCTION----------------------------------------- */
-void pop_cpu( CPU* some_cpu )
+void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg )
 {
 	printf( "[SYSTEM] CPU pop\n" );
 	stack_pop( &some_cpu->data_stack );

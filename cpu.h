@@ -31,7 +31,7 @@ const int instruction_length[] =
 
 
 /*--------------------------ENUM----------------------------------------------*/
-enum instruction_type
+enum instruction_type //включить общим файлом или сделать что-то подобное
 {
 	HLT = 0,
 	STRT = 1,
@@ -46,10 +46,28 @@ enum instruction_type
 };
 
 
+/*--------------------------ENUM----------------------------------------------*/
+enum descriptional_argument //тип дополнительного (определительного) аргумента в машинном коде
+{
+	NARG = 0,
+	INT = 1,
+	REAL = 2,
+	RGAX = 3,
+	RGBX = 4,
+	RGCX = 5,
+	RGDX = 6,
+	RAM = 7,
+	RAMA = 8,
+	RAMB = 9,
+	RAMC = 10,
+	RAMD = 11
+};
+
+
 /*--------------------------STRUCT--------------------------------------------*/
 struct CpuCode
 {
-		cpu_operand_t* machine_code = NULL;
+		cpu_operand_t* machine_code = NULL; //!TODO изменить на int
 		int N_entities = 0;
 		int N_instructions = 0;
 };
@@ -72,14 +90,14 @@ struct BinaryHeader
 
 
 /*--------------------------PROTOTYPE-----------------------------------------*/
-void execute_cpu( CPU* some_cpu, instruction_type instruction, cpu_operand_t operand = {} );
+void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_argument descr_arg = NARG, cpu_operand_t operand = {} );
 void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode );
 void cpucode_file_input( CpuCode* some_cpucode, const char* filename );
 void free_cpucode( CpuCode* some_cpucode );
 
 void start_cpu( CPU* some_cpu );
-void push_cpu( CPU* some_cpu, cpu_operand_t value );
-void pop_cpu( CPU* some_cpu );
+void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t value );
+void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg );
 void add_cpu( CPU* some_cpu );
 void sub_cpu( CPU* some_cpu );
 void mul_cpu( CPU* some_cpu );
