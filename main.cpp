@@ -1,3 +1,18 @@
+/*! \mainpage CPU
+ *
+ * This is software CPU model that can execute specific
+ * machine code red from the file given.
+ * The CPU has registers, stack and RAM and can
+ * operate large variety of instructions that can make up
+ * big sequences.
+ * This project was created during MIPT Ded's course.
+ * 
+ *
+ * by nerett
+ * (c) 2021
+ */
+
+
 #include "cpu.h"
 
 int main()
