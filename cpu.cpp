@@ -55,7 +55,7 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 
 
 		current_instruction = ( instruction_type )some_cpucode->machine_code[*i];
-		(*i)++;
+		(*i)++; //!TODO перенести управление позиицией курсора на сами функции инструкций
 
 		if( instruction_length[current_instruction] > 1 )
 		{
@@ -88,7 +88,7 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_arg
 		case HLT:  hlt_cpu( some_cpu );                      break;
 		case STRT: start_cpu( some_cpu );                    break;
 		case PUSH: push_cpu( some_cpu, descr_arg, operand ); break;
-		case POP:  pop_cpu( some_cpu, descr_arg );           break;
+		case POP:  pop_cpu( some_cpu, descr_arg, operand );  break;
 		case ADD:  add_cpu( some_cpu );                      break;
 		case SUB:  sub_cpu( some_cpu );                      break;
 		case MUL:  mul_cpu( some_cpu );                      break;
@@ -112,20 +112,20 @@ void start_cpu( CPU* some_cpu )
 
 
 /*--------------------------FUNCTION----------------------------------------- */
-void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t value )
+void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t operand )
 {
 	printf( "[SYSTEM] CPU push\n" );
 	//printf("value=%d\n", value );
 
 	switch( descr_arg )
 	{
-		case INT:  stack_push( &some_cpu->data_stack, value );                               break;
+		case INT:  stack_push( &some_cpu->data_stack, operand );                             break;
 		case REAL: printf( "REAL DOESN'T WORK\n" );                                          break; //!TODO добавить полноценную поддержку
 		case RGAX: stack_push( &some_cpu->data_stack, some_cpu->reg[0] );                    break;
 		case RGBX: stack_push( &some_cpu->data_stack, some_cpu->reg[1] );                    break;
 		case RGCX: stack_push( &some_cpu->data_stack, some_cpu->reg[2] );                    break;
 		case RGDX: stack_push( &some_cpu->data_stack, some_cpu->reg[3] );                    break;
-		case RAM:  stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[value] );            break;
+		case RAM:  stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[operand] );          break;
 		case RAMA: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[0]] ); break; //DSL'а нет, но вы держитесь
 		case RAMB: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[1]] ); break;
 		case RAMC: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[2]] ); break;
@@ -139,10 +139,24 @@ stack_dump( &some_cpu->data_stack, CALLOC_ERROR, __FILE__, __PRETTY_FUNCTION__, 
 
 
 /*--------------------------FUNCTION----------------------------------------- */
-void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg )
+void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t operand )
 {
 	printf( "[SYSTEM] CPU pop\n" );
-	stack_pop( &some_cpu->data_stack );
+
+
+	switch( descr_arg )
+	{
+		case RGAX: some_cpu->reg[0] = stack_pop( &some_cpu->data_stack );                    break;
+		case RGBX: some_cpu->reg[1] = stack_pop( &some_cpu->data_stack );                    break;
+		case RGCX: some_cpu->reg[2] = stack_pop( &some_cpu->data_stack );                    break;
+		case RGDX: some_cpu->reg[3] = stack_pop( &some_cpu->data_stack );                    break;
+		case RAM:  some_cpu->ram_ptr[operand] = stack_pop( &some_cpu->data_stack );            break; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		case RAMA: some_cpu->ram_ptr[some_cpu->reg[0]] = stack_pop( &some_cpu->data_stack ); break; //DSL'а нет, но вы держитесь
+		case RAMB: some_cpu->ram_ptr[some_cpu->reg[1]] = stack_pop( &some_cpu->data_stack ); break;
+		case RAMC: some_cpu->ram_ptr[some_cpu->reg[2]] = stack_pop( &some_cpu->data_stack ); break;
+		case RAMD: some_cpu->ram_ptr[some_cpu->reg[3]] = stack_pop( &some_cpu->data_stack ); break;
+		case NARG: printf( "NARG!!!" );                                                      break;
+	}
 }
 
 

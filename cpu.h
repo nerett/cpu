@@ -12,7 +12,7 @@ typedef int cpu_operand_t;
 
 
 /*--------------------------CONST---------------------------------------------*/
-const int CPU_VERSION = 1; ///< This parameter is compared to the same parameter from binary header red from machine code file
+const int CPU_VERSION = 3; ///< This parameter is compared to the same parameter from binary header red from machine code file
 
 const int RAM_SIZE = 100; ///< Number of RAM cells
 const int RAM_ACCESS_TIME = 20; ///< Ram access delay (adds realism to the model)
@@ -51,8 +51,8 @@ void cpucode_file_input( CpuCode* some_cpucode, const char* filename ); ///< Rea
 void free_cpucode( CpuCode* some_cpucode ); ///< Frees memory allocated by the cpucode array
 
 void start_cpu( CPU* some_cpu ); ///< Executes STRT instruction on the CPU
-void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t value ); ///< Executes PUSH instruction with the arguments and operands given on the CPU
-void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg ); ///< Executes POP instruction with the arguments given on the CPU
+void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t operand ); ///< Executes PUSH instruction with the arguments and operands given on the CPU
+void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t operand ); ///< Executes POP instruction with the arguments given on the CPU
 void add_cpu( CPU* some_cpu ); ///< Executes ADD instruction on the CPU
 void sub_cpu( CPU* some_cpu ); ///< Executes SUB instruction on the CPU
 void mul_cpu( CPU* some_cpu ); ///< Executes MUL instruction on the CPU

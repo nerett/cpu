@@ -7,8 +7,8 @@ const int instruction_length[] = ///< Number of instruction arguments in machine
 {
 	1, //HLT
 	1, //START
-	2, //PUSH
-	1, //POP
+	3, //PUSH
+	3, //POP
 	1, //ADD
 	1, //SUB
 	1, //MUL
