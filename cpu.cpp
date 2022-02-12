@@ -36,38 +36,39 @@ void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 
 
 /*--------------------------FUNCTION----------------------------------------- */
-void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode )
+void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 {
 	assert( some_cpu );
 	assert( some_cpucode );
 
 	instruction_type current_instruction = NONE;
-	cpu_operand_t param = 0;
+	cpu_operand_t operand = 0;
 	descriptional_argument descr_arg = NARG;
 
-	int i = 0;
-	while( i < some_cpucode->N_entities )
+	int* i = &( some_cpu->ip );
+	*i = start_position;
+	while( some_cpu->ip < some_cpucode->N_entities )
 	{
 		current_instruction = NONE;
-		param = 0;
+		operand = 0;
 		descr_arg = NARG;
 
 
-		current_instruction = ( instruction_type )some_cpucode->machine_code[i];
-		i++;
+		current_instruction = ( instruction_type )some_cpucode->machine_code[*i];
+		(*i)++;
 
 		if( instruction_length[current_instruction] > 1 )
 		{
-			descr_arg = ( descriptional_argument )some_cpucode->machine_code[i];
-			i++;
+			descr_arg = ( descriptional_argument )some_cpucode->machine_code[*i];
+			(*i)++;
 
 			if( instruction_length[current_instruction] > 2 )
 			{
-				param = some_cpucode->machine_code[i];
-				i++;
+				operand = some_cpucode->machine_code[*i];
+				(*i)++;
 			}
 		}
-		execute_cpu( some_cpu, current_instruction, descr_arg, param );
+		execute_cpu( some_cpu, current_instruction, descr_arg, operand );
 	}
 }
 
@@ -93,6 +94,7 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_arg
 		case MUL:  mul_cpu( some_cpu );                      break;
 		case DIV:  div_cpu( some_cpu );                      break;
 		case OUT:  out_cpu( some_cpu );                      break;
+		case JUMP: jump_cpu( some_cpu, descr_arg, operand ); break;
 		case NONE:                                           break; //в принципе, лишнее, но можно сделать проверку
 		default:                                             break;
 	}
@@ -105,6 +107,7 @@ void start_cpu( CPU* some_cpu )
 	printf( "[SYSTEM] CPU started\n" );
 	StackCtor( &some_cpu->data_stack, int_array_dump );
 	some_cpu->ram_ptr = ( cpu_operand_t* )calloc( RAM_SIZE, sizeof( cpu_operand_t ) );
+	some_cpu->ip = 0;
 }
 
 
@@ -198,4 +201,23 @@ void hlt_cpu( CPU* some_cpu )
 	printf( "[SYSTEM] CPU hlt\n" );
 	StackDtor( &some_cpu->data_stack );
 	free( some_cpu->ram_ptr );
+}
+
+
+/*--------------------------FUNCTION----------------------------------------- */
+void jump_cpu( CPU* some_cpu, descriptional_argument descr_arg, int jump_position )
+{
+	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
+	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
+
+	switch( descr_arg )
+	{
+		case TRUE: if( true ) 				some_cpu->ip = jump_position; break;
+		case ABV:  if( value_1 > value_2 ) 	some_cpu->ip = jump_position; break;
+		case NBLW: if( value_1 >= value_2 ) some_cpu->ip = jump_position; break;
+		case BLW:  if( value_1 < value_2 ) 	some_cpu->ip = jump_position; break;
+		case NABV: if( value_1 <= value_2 ) some_cpu->ip = jump_position; break;
+		case EQL:  if( value_1 == value_2 ) some_cpu->ip = jump_position; break;
+		case NEQL: if( value_1 != value_2 ) some_cpu->ip = jump_position; break;
+	}
 }
