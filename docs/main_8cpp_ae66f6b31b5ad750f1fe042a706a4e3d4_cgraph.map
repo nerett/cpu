@@ -1,0 +1,16 @@
+<map id="main" name="main">
+<area shape="rect" id="node1" title=" " alt="" coords="5,208,60,235"/>
+<area shape="rect" id="node2" href="$cpu_8cpp.html#a400741bcfd4e09bccb64d0604f9f4ccf" title="Reads machine code from file given and checks its version compatibility." alt="" coords="108,157,251,184"/>
+<area shape="rect" id="node3" href="$cpu_8cpp.html#a77adcdd0e661575613b05d2f00862430" title="Executes machine code sequence on the CPU." alt="" coords="112,208,247,235"/>
+<area shape="rect" id="node14" href="$cpu_8cpp.html#a30093f1c61920d5c3e6c9bd0c1d132eb" title="Frees memory allocated by the cpucode array." alt="" coords="125,259,234,285"/>
+<area shape="rect" id="node4" href="$cpu_8cpp.html#acce23a665c4456aed7206daf3377d307" title="Executes instruction with arguments and operands given on the CPU." alt="" coords="299,208,401,235"/>
+<area shape="rect" id="node5" href="$cpu_8cpp.html#a498fce4c970fbef8ad426cafdb1e1cff" title="Executes ADD instruction on the CPU." alt="" coords="453,5,529,32"/>
+<area shape="rect" id="node6" href="$cpu_8cpp.html#ab5a0190244acda6dd779faf2c8ad75ab" title="Executes DIV instruction on the CPU." alt="" coords="455,56,527,83"/>
+<area shape="rect" id="node7" href="$cpu_8cpp.html#a04c317db0764bc7d03cce959a7912945" title="Executes HLT instruction on the CPU." alt="" coords="456,107,525,133"/>
+<area shape="rect" id="node8" href="$cpu_8cpp.html#a550e20819b28c810222a1ea74d4491bd" title="Executes MUL instruction on the CPU." alt="" coords="452,157,529,184"/>
+<area shape="rect" id="node9" href="$cpu_8cpp.html#aadd28bb5f25d85880d8979e296c20140" title="Executes OUT instruction on the CPU." alt="" coords="454,208,527,235"/>
+<area shape="rect" id="node10" href="$cpu_8cpp.html#a206ad57b221267120dc4118099b916f3" title="Executes POP instruction with the arguments given on the CPU." alt="" coords="453,259,529,285"/>
+<area shape="rect" id="node11" href="$cpu_8cpp.html#a63908a616ffc372ef8baab5ffe0c973f" title="Executes PUSH instruction with the arguments and operands given on the CPU." alt="" coords="449,309,532,336"/>
+<area shape="rect" id="node12" href="$cpu_8cpp.html#a860291f237ccc56083974ca9795ac899" title="Executes STRT instruction on the CPU." alt="" coords="449,360,532,387"/>
+<area shape="rect" id="node13" href="$cpu_8cpp.html#a7133cbd37a15769b127ab96707428539" title="Executes SUB instruction on the CPU." alt="" coords="453,411,528,437"/>
+</map>

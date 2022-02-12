@@ -1,0 +1,12 @@
+<map id="execute_cpu" name="execute_cpu">
+<area shape="rect" id="node1" title="Executes instruction with arguments and operands given on the CPU." alt="" coords="5,208,108,235"/>
+<area shape="rect" id="node2" href="$cpu_8cpp.html#a498fce4c970fbef8ad426cafdb1e1cff" title="Executes ADD instruction on the CPU." alt="" coords="159,5,235,32"/>
+<area shape="rect" id="node3" href="$cpu_8cpp.html#ab5a0190244acda6dd779faf2c8ad75ab" title="Executes DIV instruction on the CPU." alt="" coords="161,56,233,83"/>
+<area shape="rect" id="node4" href="$cpu_8cpp.html#a04c317db0764bc7d03cce959a7912945" title="Executes HLT instruction on the CPU." alt="" coords="163,107,232,133"/>
+<area shape="rect" id="node5" href="$cpu_8cpp.html#a550e20819b28c810222a1ea74d4491bd" title="Executes MUL instruction on the CPU." alt="" coords="159,157,236,184"/>
+<area shape="rect" id="node6" href="$cpu_8cpp.html#aadd28bb5f25d85880d8979e296c20140" title="Executes OUT instruction on the CPU." alt="" coords="161,208,234,235"/>
+<area shape="rect" id="node7" href="$cpu_8cpp.html#a206ad57b221267120dc4118099b916f3" title="Executes POP instruction with the arguments given on the CPU." alt="" coords="159,259,235,285"/>
+<area shape="rect" id="node8" href="$cpu_8cpp.html#a63908a616ffc372ef8baab5ffe0c973f" title="Executes PUSH instruction with the arguments and operands given on the CPU." alt="" coords="156,309,239,336"/>
+<area shape="rect" id="node9" href="$cpu_8cpp.html#a860291f237ccc56083974ca9795ac899" title="Executes STRT instruction on the CPU." alt="" coords="156,360,239,387"/>
+<area shape="rect" id="node10" href="$cpu_8cpp.html#a7133cbd37a15769b127ab96707428539" title="Executes SUB instruction on the CPU." alt="" coords="160,411,235,437"/>
+</map>
