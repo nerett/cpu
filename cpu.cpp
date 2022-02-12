@@ -41,22 +41,34 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 	assert( some_cpu );
 	assert( some_cpucode );
 
+
 	instruction_type current_instruction = NONE;
 	cpu_operand_t operand = 0;
 	descriptional_argument descr_arg = NARG;
 
-	int* i = &( some_cpu->ip );
-	*i = start_position;
+	some_cpu->ip = start_position;
+	int i = some_cpu->ip;
+
 	while( some_cpu->ip < some_cpucode->N_entities )
 	{
 		current_instruction = NONE;
 		operand = 0;
 		descr_arg = NARG;
+		i = some_cpu->ip;
 
 
-		current_instruction = ( instruction_type )some_cpucode->machine_code[*i];
-		(*i)++; //!TODO перенести управление позиицией курсора на сами функции инструкций
+		current_instruction = ( instruction_type )some_cpucode->machine_code[i];
+		//(*i)++; //!TODO перенести управление позиицией курсора на сами функции инструкций
 
+		switch( instruction_length[current_instruction] ) //этот отбор в теории повышает безопасность (а так конечно можно было передавать всё сразу)
+		{
+			case 3:	operand = some_cpucode->machine_code[i+2];
+			case 2:	descr_arg = ( descriptional_argument )some_cpucode->machine_code[i+1];
+			case 1:;
+			break; default: printf( "INCORRECT INSTRUCTION LENGTH!\n" ); //!TODO добавить нормальную обработку ошибок
+		}
+
+/*
 		if( instruction_length[current_instruction] > 1 )
 		{
 			descr_arg = ( descriptional_argument )some_cpucode->machine_code[*i];
@@ -68,6 +80,7 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 				(*i)++;
 			}
 		}
+*/
 		execute_cpu( some_cpu, current_instruction, descr_arg, operand );
 	}
 }
@@ -102,12 +115,21 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_arg
 
 
 /*--------------------------FUNCTION----------------------------------------- */
+void set_ip_default_instruction_length( CPU* some_cpu, instruction_type instruction )
+{
+	some_cpu->ip += instruction_length[instruction];
+}
+
+
+/*--------------------------FUNCTION----------------------------------------- */
 void start_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU started\n" );
 	StackCtor( &some_cpu->data_stack, int_array_dump );
 	some_cpu->ram_ptr = ( cpu_operand_t* )calloc( RAM_SIZE, sizeof( cpu_operand_t ) );
-	some_cpu->ip = 0;
+	//some_cpu->ip = 0;
+
+	set_ip_default_instruction_length( some_cpu, STRT );
 }
 
 
@@ -116,23 +138,25 @@ void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t op
 {
 	printf( "[SYSTEM] CPU push\n" );
 	//printf("value=%d\n", value );
+	some_cpu->ip = 2;
 
 	switch( descr_arg )
 	{
-		case INT:  stack_push( &some_cpu->data_stack, operand );                             break;
-		case REAL: printf( "REAL DOESN'T WORK\n" );                                          break; //!TODO добавить полноценную поддержку
-		case RGAX: stack_push( &some_cpu->data_stack, some_cpu->reg[0] );                    break;
-		case RGBX: stack_push( &some_cpu->data_stack, some_cpu->reg[1] );                    break;
-		case RGCX: stack_push( &some_cpu->data_stack, some_cpu->reg[2] );                    break;
-		case RGDX: stack_push( &some_cpu->data_stack, some_cpu->reg[3] );                    break;
-		case RAM:  stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[operand] );          break;
-		case RAMA: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[0]] ); break; //DSL'а нет, но вы держитесь
-		case RAMB: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[1]] ); break;
-		case RAMC: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[2]] ); break;
-		case RAMD: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[3]] ); break;
-		case NARG: printf( "NARG!!!" );                                                      break;
+		case INT:  stack_push( &some_cpu->data_stack, operand );												break;
+		case REAL: printf( "REAL DOESN'T WORK\n" );	some_cpu->ip++;												break; //!TODO добавить полноценную поддержку
+		case RGAX: stack_push( &some_cpu->data_stack, some_cpu->reg[0] );										break;
+		case RGBX: stack_push( &some_cpu->data_stack, some_cpu->reg[1] );										break;
+		case RGCX: stack_push( &some_cpu->data_stack, some_cpu->reg[2] );										break;
+		case RGDX: stack_push( &some_cpu->data_stack, some_cpu->reg[3] );										break;
+		case RAM:  stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[operand] ); some_cpu->ip++;				break;
+		case RAMA: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[0]] );					break; //DSL'а нет, но вы держитесь
+		case RAMB: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[1]] );					break;
+		case RAMC: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[2]] );					break;
+		case RAMD: stack_push( &some_cpu->data_stack, some_cpu->ram_ptr[some_cpu->reg[3]] );					break;
+		case NARG: printf( "NARG!!!" );																			break;
 	}
 
+	//set_ip_default_instruction_length( some_cpu, PUSH );
 
 stack_dump( &some_cpu->data_stack, CALLOC_ERROR, __FILE__, __PRETTY_FUNCTION__, __LINE__  );
 }
@@ -143,20 +167,23 @@ void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t ope
 {
 	printf( "[SYSTEM] CPU pop\n" );
 
+	some_cpu->ip = 2;
 
 	switch( descr_arg )
 	{
-		case RGAX: some_cpu->reg[0] = stack_pop( &some_cpu->data_stack );                    break;
-		case RGBX: some_cpu->reg[1] = stack_pop( &some_cpu->data_stack );                    break;
-		case RGCX: some_cpu->reg[2] = stack_pop( &some_cpu->data_stack );                    break;
-		case RGDX: some_cpu->reg[3] = stack_pop( &some_cpu->data_stack );                    break;
-		case RAM:  some_cpu->ram_ptr[operand] = stack_pop( &some_cpu->data_stack );            break; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		case RAMA: some_cpu->ram_ptr[some_cpu->reg[0]] = stack_pop( &some_cpu->data_stack ); break; //DSL'а нет, но вы держитесь
-		case RAMB: some_cpu->ram_ptr[some_cpu->reg[1]] = stack_pop( &some_cpu->data_stack ); break;
-		case RAMC: some_cpu->ram_ptr[some_cpu->reg[2]] = stack_pop( &some_cpu->data_stack ); break;
-		case RAMD: some_cpu->ram_ptr[some_cpu->reg[3]] = stack_pop( &some_cpu->data_stack ); break;
-		case NARG: printf( "NARG!!!" );                                                      break;
+		case RGAX: some_cpu->reg[0] = stack_pop( &some_cpu->data_stack );								break;
+		case RGBX: some_cpu->reg[1] = stack_pop( &some_cpu->data_stack );								break;
+		case RGCX: some_cpu->reg[2] = stack_pop( &some_cpu->data_stack );								break;
+		case RGDX: some_cpu->reg[3] = stack_pop( &some_cpu->data_stack );								break;
+		case RAM:  some_cpu->ram_ptr[operand] = stack_pop( &some_cpu->data_stack ); some_cpu->ip++;		break; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		case RAMA: some_cpu->ram_ptr[some_cpu->reg[0]] = stack_pop( &some_cpu->data_stack );			break; //DSL'а нет, но вы держитесь
+		case RAMB: some_cpu->ram_ptr[some_cpu->reg[1]] = stack_pop( &some_cpu->data_stack );			break;
+		case RAMC: some_cpu->ram_ptr[some_cpu->reg[2]] = stack_pop( &some_cpu->data_stack );			break;
+		case RAMD: some_cpu->ram_ptr[some_cpu->reg[3]] = stack_pop( &some_cpu->data_stack );			break;
+		case NARG: printf( "NARG!!!" );																	break;
 	}
+
+	//set_ip_default_instruction_length( some_cpu, POP );
 }
 
 
@@ -167,6 +194,8 @@ void add_cpu( CPU* some_cpu )
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 + value_2 );
+
+	set_ip_default_instruction_length( some_cpu, ADD );
 }
 
 
@@ -177,6 +206,8 @@ void sub_cpu( CPU* some_cpu )
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 - value_2 );
+
+	set_ip_default_instruction_length( some_cpu, SUB );
 }
 
 
@@ -187,6 +218,8 @@ void mul_cpu( CPU* some_cpu )
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 * value_2 );
+
+	set_ip_default_instruction_length( some_cpu, MUL );
 }
 
 
@@ -197,6 +230,8 @@ void div_cpu( CPU* some_cpu )
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 / value_2 );
+
+	set_ip_default_instruction_length( some_cpu, DIV );
 }
 
 
@@ -206,6 +241,8 @@ void out_cpu( CPU* some_cpu )
 	printf( "[SYSTEM] CPU out\n" );
 	cpu_operand_t value = stack_pop( &some_cpu->data_stack );
 	printf("%d\n", value );
+
+	set_ip_default_instruction_length( some_cpu, OUT );
 }
 
 
@@ -215,6 +252,8 @@ void hlt_cpu( CPU* some_cpu )
 	printf( "[SYSTEM] CPU hlt\n" );
 	StackDtor( &some_cpu->data_stack );
 	free( some_cpu->ram_ptr );
+
+	set_ip_default_instruction_length( some_cpu, HLT );
 }
 
 
@@ -234,4 +273,6 @@ void jump_cpu( CPU* some_cpu, descriptional_argument descr_arg, int jump_positio
 		case EQL:  if( value_1 == value_2 ) some_cpu->ip = jump_position; break;
 		case NEQL: if( value_1 != value_2 ) some_cpu->ip = jump_position; break;
 	}
+
+	set_ip_default_instruction_length( some_cpu, JUMP );
 }

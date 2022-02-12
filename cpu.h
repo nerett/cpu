@@ -47,6 +47,7 @@ struct BinaryHeader ///< Describes special machine code file header that is resp
 /*--------------------------PROTOTYPE-----------------------------------------*/
 void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_argument descr_arg = NARG, cpu_operand_t operand = {} ); ///< Executes instruction with arguments and operands given on the CPU
 void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position = 0 ); ///< Executes machine code sequence on the CPU
+void set_ip_default_instruction_length( CPU* some_cpu, instruction_type instruction );
 void cpucode_file_input( CpuCode* some_cpucode, const char* filename ); ///< Reads machine code from file given and checks its version compatibility
 void free_cpucode( CpuCode* some_cpucode ); ///< Frees memory allocated by the cpucode array
 
