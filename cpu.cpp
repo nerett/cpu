@@ -262,6 +262,7 @@ void hlt_cpu( CPU* some_cpu )
 	printf( "[SYSTEM] CPU hlt\n" );
 
 	StackDtor( &some_cpu->data_stack );
+	StackDtor( &some_cpu->return_stack );
 	free( some_cpu->ram_ptr );
 
 	set_ip_default_instruction_length( some_cpu, HLT );
