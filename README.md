@@ -11,10 +11,18 @@ Download this repository with
 git clone https://github.com/nerett/cpu.git
 ```
 
-Build the project
+Download dependencies with
 
 ```
 cd cpu/
+make install-dependencies
+```
+
+or download the repositiries required manually.
+
+Build the project
+
+```
 make
 ```
 

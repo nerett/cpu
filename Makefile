@@ -31,7 +31,7 @@ libcpu:
 
 #-----------------------------installing dependencies----------------------------------------
 install-dependencies:
-	git clone $(DEPENDENCIES)
+	cd .. && git clone $(DEPENDENCIES)
 
 
 #------------------------------------running-------------------------------------------------
