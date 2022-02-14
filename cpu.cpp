@@ -65,7 +65,7 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 			case 3:	operand = some_cpucode->machine_code[i+2];
 			case 2:	descr_arg = ( descriptional_argument )some_cpucode->machine_code[i+1];
 			case 1:;
-			break; default: printf( "INCORRECT INSTRUCTION LENGTH!\n" ); //!TODO добавить нормальную обработку ошибок
+			break; default: printf( "INVALID INSTRUCTION LENGTH! (%d)\n", instruction_length[current_instruction] ); //!TODO добавить нормальную обработку ошибок
 		}
 
 /*
@@ -98,18 +98,19 @@ void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_arg
 {
 	switch( instruction )
 	{
-		case HLT:  hlt_cpu( some_cpu );                      break;
-		case STRT: start_cpu( some_cpu );                    break;
-		case PUSH: push_cpu( some_cpu, descr_arg, operand ); break;
-		case POP:  pop_cpu( some_cpu, descr_arg, operand );  break;
-		case ADD:  add_cpu( some_cpu );                      break;
-		case SUB:  sub_cpu( some_cpu );                      break;
-		case MUL:  mul_cpu( some_cpu );                      break;
-		case DIV:  div_cpu( some_cpu );                      break;
-		case OUT:  out_cpu( some_cpu );                      break;
-		case JUMP: jump_cpu( some_cpu, descr_arg, operand ); break;
-		case NONE:                                           break; //в принципе, лишнее, но можно сделать проверку
-		default:                                             break;
+		case HLT:  hlt_cpu( some_cpu );							break;
+		case STRT: start_cpu( some_cpu );						break;
+		case PUSH: push_cpu( some_cpu, descr_arg, operand );	break;
+		case POP:  pop_cpu( some_cpu, descr_arg, operand );		break;
+		case ADD:  add_cpu( some_cpu );							break;
+		case SUB:  sub_cpu( some_cpu );							break;
+		case MUL:  mul_cpu( some_cpu );							break;
+		case DIV:  div_cpu( some_cpu );							break;
+		case OUT:  out_cpu( some_cpu );							break;
+		case JUMP: jump_cpu( some_cpu, descr_arg, operand );	break;
+		case RET:  ret_cpu( some_cpu );							break;
+		case NONE:												break; //в принципе, лишнее, но можно сделать проверку
+		default:												break;
 	}
 }
 
@@ -125,7 +126,10 @@ void set_ip_default_instruction_length( CPU* some_cpu, instruction_type instruct
 void start_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU started\n" );
+
 	StackCtor( &some_cpu->data_stack, int_array_dump );
+	StackCtor( &some_cpu->return_stack, int_array_dump );
+
 	some_cpu->ram_ptr = ( cpu_operand_t* )calloc( RAM_SIZE, sizeof( cpu_operand_t ) );
 	//some_cpu->ip = 0;
 
@@ -137,6 +141,7 @@ void start_cpu( CPU* some_cpu )
 void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t operand )
 {
 	printf( "[SYSTEM] CPU push\n" );
+
 	//printf("value=%d\n", value );
 	some_cpu->ip = 2;
 
@@ -191,6 +196,7 @@ void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t ope
 void add_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU add\n" );
+
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 + value_2 );
@@ -203,6 +209,7 @@ void add_cpu( CPU* some_cpu )
 void sub_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU sub\n" );
+
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 - value_2 );
@@ -215,6 +222,7 @@ void sub_cpu( CPU* some_cpu )
 void mul_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU mul\n" );
+
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 * value_2 );
@@ -227,6 +235,7 @@ void mul_cpu( CPU* some_cpu )
 void div_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU div\n" );
+
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
 	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
 	stack_push( &some_cpu->data_stack, value_1 / value_2 );
@@ -239,6 +248,7 @@ void div_cpu( CPU* some_cpu )
 void out_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU out\n" );
+
 	cpu_operand_t value = stack_pop( &some_cpu->data_stack );
 	printf("%d\n", value );
 
@@ -250,6 +260,7 @@ void out_cpu( CPU* some_cpu )
 void hlt_cpu( CPU* some_cpu )
 {
 	printf( "[SYSTEM] CPU hlt\n" );
+
 	StackDtor( &some_cpu->data_stack );
 	free( some_cpu->ram_ptr );
 
@@ -260,19 +271,35 @@ void hlt_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void jump_cpu( CPU* some_cpu, descriptional_argument descr_arg, int jump_position )
 {
-	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
-	cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
-
-	switch( descr_arg )
-	{
-		case TRUE: if( true ) 				some_cpu->ip = jump_position; break;
-		case ABV:  if( value_1 > value_2 ) 	some_cpu->ip = jump_position; break;
-		case NBLW: if( value_1 >= value_2 ) some_cpu->ip = jump_position; break;
-		case BLW:  if( value_1 < value_2 ) 	some_cpu->ip = jump_position; break;
-		case NABV: if( value_1 <= value_2 ) some_cpu->ip = jump_position; break;
-		case EQL:  if( value_1 == value_2 ) some_cpu->ip = jump_position; break;
-		case NEQL: if( value_1 != value_2 ) some_cpu->ip = jump_position; break;
-	}
+	printf( "[SYSTEM] CPU jump\n" );
 
 	set_ip_default_instruction_length( some_cpu, JUMP );
+	stack_push( &some_cpu->return_stack, some_cpu->ip );
+
+	if( descr_arg == TRUE )
+	{
+		some_cpu->ip = jump_position;
+	}
+	else
+	{
+		cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
+		cpu_operand_t value_2 = stack_pop( &some_cpu->data_stack );
+
+		switch( descr_arg )
+		{
+			case ABV:  if( value_1 > value_2 ) 	some_cpu->ip = jump_position; break;
+			case NBLW: if( value_1 >= value_2 ) some_cpu->ip = jump_position; break;
+			case BLW:  if( value_1 < value_2 ) 	some_cpu->ip = jump_position; break;
+			case NABV: if( value_1 <= value_2 ) some_cpu->ip = jump_position; break;
+			case EQL:  if( value_1 == value_2 ) some_cpu->ip = jump_position; break;
+			case NEQL: if( value_1 != value_2 ) some_cpu->ip = jump_position; break;
+		}
+	}
+}
+
+
+/*--------------------------FUNCTION----------------------------------------- */
+void ret_cpu( CPU* some_cpu )
+{
+	some_cpu->ip = stack_pop( &some_cpu->return_stack ); //отсутствие проверок опасно (баги!!!)
 }

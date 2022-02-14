@@ -14,7 +14,8 @@ const int instruction_length[] = ///< Number of instruction arguments in machine
 	1, //MUL
 	1, //DIV
 	1, //OUT
-	3, //JUMP
+	3, //JUMP //во избежание ошибок длина должна быть постоянной
+	1, //RET
 	1 //NONE
 };
 
@@ -33,7 +34,8 @@ enum instruction_type ///< Machine instructions, which are specific actions perf
 	DIV = 7,
 	OUT = 8,
 	JUMP = 9,
-	NONE = 10
+	RET = 10,
+	NONE = 11
 };
 
 

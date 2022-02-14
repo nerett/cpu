@@ -12,7 +12,7 @@ typedef int cpu_operand_t;
 
 
 /*--------------------------CONST---------------------------------------------*/
-const int CPU_VERSION = 3; ///< This parameter is compared to the same parameter from binary header red from machine code file
+const int CPU_VERSION = 4; ///< This parameter is compared to the same parameter from binary header red from machine code file
 
 const int RAM_SIZE = 100; ///< Number of RAM cells
 const int RAM_ACCESS_TIME = 20; ///< Ram access delay (adds realism to the model)
@@ -29,7 +29,10 @@ struct CpuCode ///< Describes machine code that can be loaded from file and exec
 struct CPU ///< Describes CPU with its stack, registers and RAM
 {
 	Stack data_stack;
+	Stack return_stack;
+
 	int ip = 0;
+
 	cpu_operand_t reg[4] = {};
 	cpu_operand_t* ram_ptr = NULL;
 	//cpu_operand_t
@@ -61,6 +64,7 @@ void div_cpu( CPU* some_cpu ); ///< Executes DIV instruction on the CPU
 void out_cpu( CPU* some_cpu ); ///< Executes OUT instruction on the CPU
 void hlt_cpu( CPU* some_cpu ); ///< Executes HLT instruction on the CPU
 void jump_cpu( CPU* some_cpu, descriptional_argument descr_arg, int jump_position );
+void ret_cpu( CPU* some_cpu );
 
 
 #endif //CPU_H_INCLUDED
