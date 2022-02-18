@@ -18,7 +18,7 @@ cd cpu/
 make install-dependencies
 ```
 
-or download the repositiries required manually.
+...or download the repositiries required manually.
 
 Build the project
 

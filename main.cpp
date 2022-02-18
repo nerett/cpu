@@ -15,16 +15,16 @@
 
 #include "cpu.h"
 
-int main()
+
+int main( int argc, char** argv )
 {
 	remake_log();
 
 	CpuCode some_cpucode = {};
 	CPU Pentium_D = {};
-	cpu_operand_t param = {};
-	instruction_type the_instruction = {};
-
-	cpucode_file_input( &some_cpucode, "../cpucode_builder/cpucode" );
+	
+	char* cpucode_filename = argv_get_cpucode_filename( argc, argv );
+	cpucode_file_input( &some_cpucode, cpucode_filename );
 
 	execute_cpucode( &Pentium_D, &some_cpucode );
 

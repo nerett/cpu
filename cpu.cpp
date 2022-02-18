@@ -2,40 +2,6 @@
 
 
 /*--------------------------FUNCTION----------------------------------------- */
-void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
-{
-	assert( filename );
-
-
-	FILE* cpucode_file = fopen( filename, "rb" );
-
-	BinaryHeader bin_header;
-	fread( &bin_header, sizeof( BinaryHeader ), 1, cpucode_file );
-	if( strcmp( bin_header.name, "SoftwareProcessor" ) != 0 )
-	{
-		printf( "Invalid executable file!\n" );
-		return;
-	}
-	if( bin_header.version > CPU_VERSION )
-	{
-		printf( "The version of the cpucode commands is too new for this CPU!\n" );
-		return;
-	}
-
-	fseek( cpucode_file, 0L, SEEK_END ); //определение размера файла
-    some_cpucode->N_entities = ( ( ftell( cpucode_file ) - sizeof( BinaryHeader ) )/ sizeof( int ) ); //новая функция
-	fseek( cpucode_file, sizeof( BinaryHeader ), SEEK_SET );
-
-	some_cpucode->machine_code = ( cpu_operand_t* )calloc( some_cpucode->N_entities + 1, sizeof( cpu_operand_t ) ); //смена типа пока не работает в силу неравномерности
-	fread( some_cpucode->machine_code, sizeof( int ), some_cpucode->N_entities, cpucode_file );
-
-	some_cpucode->machine_code[some_cpucode->N_entities+1] = -1;
-
-	fclose( cpucode_file );
-}
-
-
-/*--------------------------FUNCTION----------------------------------------- */
 void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 {
 	assert( some_cpu );
@@ -83,13 +49,6 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 */
 		execute_cpu( some_cpu, current_instruction, descr_arg, operand );
 	}
-}
-
-
-/*--------------------------FUNCTION----------------------------------------- */
-void free_cpucode( CpuCode* some_cpucode )
-{
-	free( some_cpucode->machine_code);
 }
 
 

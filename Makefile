@@ -8,10 +8,12 @@ EXECDIR = Debug/
 
 STACKDIR = ../stack/
 
+CPUCODEPATH = ../cpucode_builder/cpucode
+
 
 #------------------------------------building-----------------------------------------------
 all: mkdir main
-	$(CC) $(LDFLAGS) $(BUILDDIR)main.o $(BUILDDIR)libcpu.o $(BUILDDIR)libstack.o $(BUILDDIR)libstack_config.o -o $(EXECDIR)cpu
+	$(CC) $(LDFLAGS) $(BUILDDIR)main.o $(BUILDDIR)libcpu.o $(BUILDDIR)libcpu_io.o $(BUILDDIR)libstack.o $(BUILDDIR)libstack_config.o -o $(EXECDIR)cpu
 	
 mkdir:
 	mkdir -p Build Debug
@@ -25,18 +27,21 @@ libstack: libstack_config
 libstack_config:
 	$(CC) $(CFLAGS) $(STACKDIR)config.cpp -o $(BUILDDIR)libstack_config.o
 
-libcpu:
+libcpu: libcpu_io
 	$(CC) $(CFLAGS) cpu.cpp -o $(BUILDDIR)libcpu.o
+
+libcpu_io:
+	$(CC) $(CFLAGS) cpu_io.cpp -o $(BUILDDIR)libcpu_io.o
 
 
 #-----------------------------installing dependencies----------------------------------------
 install-dependencies:
-	cd .. && git clone $(DEPENDENCIES)
+	cd .. && git clone $(DEPENDENCIES)$(BUILDDIR)libcpu.o
 
 
 #------------------------------------running-------------------------------------------------
 run:
-	./$(EXECDIR)cpu
+	./$(EXECDIR)cpu $(CPUCODEPATH)
 
 rund:
 	valgrind ./$(EXECDIR)cpu
