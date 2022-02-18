@@ -26,10 +26,16 @@ Build the project
 make
 ```
 
-Run Software CPU with
+Run Software CPU with (machine code file path is set to default)
 
 ```
-make run <path-to-machine-code>
+make run
+```
+
+or with
+
+```
+./Debug/cpu <path-to-machine-code>
 ```
 
 To totally rebuild the project run
