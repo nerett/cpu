@@ -32,7 +32,8 @@ Run Software CPU with (machine code file path is set to default)
 make run
 ```
 
-or with
+or use `make rund` instead to run with `valgrind`.
+You can also run this binary with
 
 ```
 ./Debug/cpu <path-to-machine-code>

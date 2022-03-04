@@ -1,9 +1,13 @@
 #include "cpu_io.h"
+#include "cpu_logs.h"
 
 
 /*--------------------------FUNCTION----------------------------------------- */
 void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 {
+	//printf( "cpucode file input\n" );
+	cpulogs_report( "starting cpucode file input", false );
+
 	assert( filename ); //!TODO добавить нормальную проверку
 
 
@@ -38,6 +42,8 @@ void cpucode_file_input( CpuCode* some_cpucode, const char* filename )
 /*--------------------------FUNCTION----------------------------------------- */
 void free_cpucode( CpuCode* some_cpucode )
 {
+	cpulogs_report( "trying to free cpucode", false );
+
 	free( some_cpucode->machine_code);
 }
 
@@ -45,6 +51,8 @@ void free_cpucode( CpuCode* some_cpucode )
 /*--------------------------FUNCTION----------------------------------------- */
 char* argv_get_cpucode_filename( int argc, char** argv )
 {
+	cpulogs_report( "getting cpucode filename from argv", false );
+
 	if( argc < CPUIO_MINIMAL_ARGC )
 	{
 		return {}; //!TODO возврат кода ошибки

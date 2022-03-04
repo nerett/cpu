@@ -1,9 +1,12 @@
 #include "cpu.h"
+#include "cpu_logs.h"
 
 
 /*--------------------------FUNCTION----------------------------------------- */
 void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 {
+	cpulogs_report( "executing cpucode", false );
+
 	assert( some_cpu );
 	assert( some_cpucode );
 
@@ -31,7 +34,7 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 			case 3:	operand = some_cpucode->machine_code[i+2];
 			case 2:	descr_arg = ( descriptional_argument )some_cpucode->machine_code[i+1];
 			case 1:;
-			break; default: printf( "INVALID INSTRUCTION LENGTH! (%d)\n", instruction_length[current_instruction] ); //!TODO добавить нормальную обработку ошибок
+			break; //default: printf( "INVALID INSTRUCTION LENGTH! (%d)\n", instruction_length[current_instruction] ); //!TODO добавить нормальную обработку ошибок
 		}
 
 /*
@@ -55,6 +58,8 @@ void execute_cpucode( CPU* some_cpu, CpuCode* some_cpucode, int start_position )
 /*--------------------------FUNCTION----------------------------------------- */
 void execute_cpu( CPU* some_cpu, instruction_type instruction, descriptional_argument descr_arg, cpu_operand_t operand )
 {
+	cpulogs_report( "executing instruction", false );
+
 	switch( instruction )
 	{
 		case HLT:  hlt_cpu( some_cpu );							break;
@@ -84,6 +89,8 @@ void set_ip_default_instruction_length( CPU* some_cpu, instruction_type instruct
 /*--------------------------FUNCTION----------------------------------------- */
 void start_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU start", false );
+
 	printf( "[SYSTEM] CPU started\n" );
 
 	StackCtor( &some_cpu->data_stack, int_array_dump );
@@ -99,6 +106,8 @@ void start_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void push_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t operand )
 {
+	cpulogs_report( "CPU push", false );
+
 	printf( "[SYSTEM] CPU push\n" );
 
 	//printf("value=%d\n", value );
@@ -129,6 +138,8 @@ stack_dump( &some_cpu->data_stack, CALLOC_ERROR, __FILE__, __PRETTY_FUNCTION__, 
 /*--------------------------FUNCTION----------------------------------------- */
 void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t operand )
 {
+	cpulogs_report( "CPU pop", false );
+
 	printf( "[SYSTEM] CPU pop\n" );
 
 	some_cpu->ip = 2;
@@ -154,6 +165,8 @@ void pop_cpu( CPU* some_cpu, descriptional_argument descr_arg, cpu_operand_t ope
 /*--------------------------FUNCTION----------------------------------------- */
 void add_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU add", false );
+
 	printf( "[SYSTEM] CPU add\n" );
 
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
@@ -167,6 +180,8 @@ void add_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void sub_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU sub", false );
+
 	printf( "[SYSTEM] CPU sub\n" );
 
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
@@ -180,6 +195,8 @@ void sub_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void mul_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU mul", false );
+
 	printf( "[SYSTEM] CPU mul\n" );
 
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
@@ -193,6 +210,8 @@ void mul_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void div_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU div", false );
+
 	printf( "[SYSTEM] CPU div\n" );
 
 	cpu_operand_t value_1 = stack_pop( &some_cpu->data_stack );
@@ -206,6 +225,8 @@ void div_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void out_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU out", false );
+
 	printf( "[SYSTEM] CPU out\n" );
 
 	cpu_operand_t value = stack_pop( &some_cpu->data_stack );
@@ -218,6 +239,8 @@ void out_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void hlt_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU hlt", false );
+
 	printf( "[SYSTEM] CPU hlt\n" );
 
 	StackDtor( &some_cpu->data_stack );
@@ -231,6 +254,8 @@ void hlt_cpu( CPU* some_cpu )
 /*--------------------------FUNCTION----------------------------------------- */
 void jump_cpu( CPU* some_cpu, descriptional_argument descr_arg, int jump_position )
 {
+	cpulogs_report( "CPU jump", false );
+
 	printf( "[SYSTEM] CPU jump\n" );
 
 	set_ip_default_instruction_length( some_cpu, JUMP );
@@ -261,5 +286,7 @@ void jump_cpu( CPU* some_cpu, descriptional_argument descr_arg, int jump_positio
 /*--------------------------FUNCTION----------------------------------------- */
 void ret_cpu( CPU* some_cpu )
 {
+	cpulogs_report( "CPU ret", false );
+	
 	some_cpu->ip = stack_pop( &some_cpu->return_stack ); //отсутствие проверок опасно (баги!!!)
 }

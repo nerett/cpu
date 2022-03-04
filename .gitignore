@@ -1,6 +1,6 @@
 Debug/
 Build/
 stack_log.html
-input.txt
+cpu_log.html
 compile_run.sh
 Doxyfile
