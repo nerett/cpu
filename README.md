@@ -1,5 +1,6 @@
 # CPU
-This project is an implementation of software cpu model, that consists of registers, RAM and stack and can execute compiled specific assembler code (specific machine code) with its built-in instructions. It automatically checks whether this code is supported or not.
+This project is an implementation of software cpu model, that consists of registers, RAM and stack and can execute compiled specific assembler code (specific machine code) with its built-in instructions. It automatically checks whether this code is supported or not. There are html logs from `stack` and from `cpu` itself (but they're not fully-featured unfortunately).
+This project is written in C with some handy C++ adjustments.
 
 ## Usage
 If you've already built and added `cpu` to `$PATH`, run `cpu <path-to-machine-code>` to execute a file with the machine code supported. Otherwise build the project and execute with `./Debug/cpu` or `make run` (from project root directory).
